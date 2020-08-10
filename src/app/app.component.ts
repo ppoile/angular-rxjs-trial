@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  OnInit,
+} from '@angular/core';
 import {
   from,
   of,
@@ -11,6 +15,7 @@ import {
   map,
   switchMap,
   take,
+  takeUntil,
 } from 'rxjs/operators';
 
 @Component({
@@ -21,6 +26,7 @@ import {
 export class AppComponent implements OnInit {
   title = 'angular-rxjs-trial';
   NUM_TESTRUNS_PER_CATEGORY = 3;
+  cancel$: any;
 
   constructor() {
     console.log('constructor()...');
@@ -28,15 +34,23 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     console.log('ngOnInit()...');
-    this.setupTestresultStream();
+    this.setupStreams();
   }
 
-  public onButtonClick() {
-    console.log('onButtonClick()...');
+  @HostListener('document:keydown.escape', ['$event'])
+  onKeydown(event: KeyboardEvent) {
+    console.log('ESC pressed');
+    this.onCancelTestresultStream();
   }
 
-  private setupTestresultStream() {
-    console.log('setupTestresultStream()...');
+  public onCancelTestresultStream() {
+    console.log('onCancelTestresultStream()...');
+    this.cancel$.next();
+  }
+
+  private setupStreams() {
+    console.log('setupStreams()...');
+    this.cancel$ = new Subject();
     const source = timer(0, 7000).pipe(
       map(i => i + 1),
       take(2),
@@ -64,6 +78,7 @@ export class AppComponent implements OnInit {
       concatMap(
         (testrun: any) => this.getTestrunDependencies(testrun)
       ),
+      takeUntil(this.cancel$),
     );
   }
 
