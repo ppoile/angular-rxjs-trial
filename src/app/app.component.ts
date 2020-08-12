@@ -12,6 +12,7 @@ import {
 import {
   concatMap,
   delay,
+  flatMap,
   map,
   switchMap,
   take,
@@ -66,13 +67,13 @@ export class AppComponent implements OnInit {
 
   private getCategoryAndDependencies(selectedJobId: number) {
     return of(selectedJobId).pipe(
-      concatMap(
+      flatMap(
         (selectedJobId: number) => this.getCategory(selectedJobId)
       ),
-      concatMap(
+      flatMap(
         (category: any) => this.getTestruns(category)
       ),
-      concatMap(
+      flatMap(
         (testruns: any[]) => from(testruns)
       ),
       concatMap(
@@ -107,13 +108,13 @@ export class AppComponent implements OnInit {
 
   private getTestrunDependencies(testrun: any) {
     return of(testrun).pipe(
-      concatMap(
+      flatMap(
         (testrun: any) => this.getTestrunProperties(testrun)
       ),
-      concatMap(
+      flatMap(
         (testrun: any) => this.getTestcaseOwners(testrun)
       ),
-      concatMap(
+      flatMap(
         (testrun: any) => this.getTestrunMatrix(testrun)
       ),
     );
