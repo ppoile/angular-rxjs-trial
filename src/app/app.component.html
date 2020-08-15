@@ -1,3 +1,17 @@
-<h1>Welcome</h1>
-<p>{{ title }} app is running!</p>
-<button (click)="onButtonClick()" mat-button>Basic</button>
+<mat-card>
+  <mat-card-content>
+    <h1>Würfeler</h1>
+    <button (click)="onButtonClick()" mat-button>Würfle</button>
+    <div *ngIf="progress<1;then progressbar else new_cube_value"></div>
+    <ng-template #progressbar>
+      <mat-progress-spinner
+        color="primary"
+        mode="indeterminate"
+        [value]="progress">
+      </mat-progress-spinner>
+    </ng-template>
+    <ng-template #new_cube_value>
+      <h1>{{ cubeValue }}</h1>
+    </ng-template>
+  </mat-card-content>
+</mat-card>
